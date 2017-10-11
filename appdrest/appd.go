@@ -17,7 +17,8 @@ type Client struct {
 	//Shared between different APIs
 	common service
 
-	Application *ApplicationService
+	Application         *ApplicationService
+	BusinessTransaction *BusinessTransactionService
 }
 
 type service struct {
@@ -51,6 +52,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.common.client = c
 
 	c.Application = (*ApplicationService)(&c.common)
+	c.BusinessTransaction = (*BusinessTransactionService)(&c.common)
 
 	return c
 }
