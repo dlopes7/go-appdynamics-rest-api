@@ -19,6 +19,7 @@ type Client struct {
 
 	Application         *ApplicationService
 	BusinessTransaction *BusinessTransactionService
+	Tier                *TierService
 }
 
 type service struct {
@@ -53,6 +54,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 
 	c.Application = (*ApplicationService)(&c.common)
 	c.BusinessTransaction = (*BusinessTransactionService)(&c.common)
+	c.Tier = (*TierService)(&c.common)
 
 	return c
 }
