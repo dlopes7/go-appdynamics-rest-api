@@ -20,6 +20,7 @@ type Client struct {
 	Application         *ApplicationService
 	BusinessTransaction *BusinessTransactionService
 	Tier                *TierService
+	MetricData          *MetricDataService
 }
 
 type service struct {
@@ -55,6 +56,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.Application = (*ApplicationService)(&c.common)
 	c.BusinessTransaction = (*BusinessTransactionService)(&c.common)
 	c.Tier = (*TierService)(&c.common)
+	c.MetricData = (*MetricDataService)(&c.common)
 
 	return c
 }
@@ -94,6 +96,8 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 // Do makes the http request
 func (c *Client) Do(req *http.Request, v interface{}) error {
+
+	req.URL.RawQuery = req.URL.Query().Encode()
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return err
@@ -101,7 +105,7 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode > 400 {
+	if resp.StatusCode >= 400 {
 		return fmt.Errorf("Status Code Error: %d", resp.StatusCode)
 	}
 
