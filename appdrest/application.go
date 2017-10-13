@@ -1,5 +1,9 @@
 package appdrest
 
+import (
+	"fmt"
+)
+
 // Application represents a single Business Application within AppDynamics
 type Application struct {
 	Name        string `json:"name"`
@@ -27,4 +31,23 @@ func (s *ApplicationService) GetApplications() ([]*Application, error) {
 	}
 
 	return apps, nil
+}
+
+// GetApplication gets an Application by Name or ID
+func (s *ApplicationService) GetApplication(appNameOrID string) (*Application, error) {
+
+	url := fmt.Sprintf("rest/applications/%s?output=json", appNameOrID)
+
+	req, err := s.client.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var apps []*Application
+	err = s.client.Do(req, &apps)
+	if err != nil {
+		return nil, err
+	}
+
+	return apps[0], nil
 }
