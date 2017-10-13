@@ -106,7 +106,7 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		return fmt.Errorf("Status Code Error: %d", resp.StatusCode)
+		return fmt.Errorf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req)
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(v)
