@@ -28,6 +28,13 @@ type MetricValue struct {
 	StandardDeviation int   `json:"standardDeviation"`
 }
 
+// Metric represents a Metric object that might be a folder or child
+type Metric struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+// Consts for the technique used to obtain metric data
 const (
 	BeforeNow    = "BEFORE_NOW"
 	BeforeTime   = "BEFORE_TIME"
@@ -64,6 +71,28 @@ func (s *MetricDataService) GetMetricData(appID int, metricPath string, rollup b
 	}
 
 	var metrics []*MetricData
+	err = s.client.Do(req, &metrics)
+	if err != nil {
+		return nil, err
+	}
+
+	return metrics, nil
+}
+
+// GetMetricHierarchy obtains the Metric Browser hierarchy
+func (s *MetricDataService) GetMetricHierarchy(appID int, metricPath string) ([]*Metric, error) {
+	url := fmt.Sprintf("rest/applications/%d/metrics?output=json", appID)
+
+	if metricPath != "" {
+		url += fmt.Sprintf("&metric-path=%s", metricPath)
+	}
+
+	req, err := s.client.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var metrics []*Metric
 	err = s.client.Do(req, &metrics)
 	if err != nil {
 		return nil, err
