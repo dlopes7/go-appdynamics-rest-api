@@ -20,7 +20,7 @@ func main() {
 			panic(err.Error())
 		}
 		for _, bt := range bts {
-			fmt.Printf("Tier: %s, BT: %s, Type: %s\n", bt.TierName, bt.Name, bt.EntryPointType)
+			fmt.Printf("App: %s, Tier: %s, BT: %s, Type: %s\n", app.Name, bt.TierName, bt.Name, bt.EntryPointType)
 		}
 
 	}
