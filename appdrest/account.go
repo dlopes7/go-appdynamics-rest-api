@@ -13,7 +13,7 @@ type Account struct {
 }
 
 // LicenseModules is small wrapper to a list of LicenseModule
-type LicenseModules struct {
+type licenseModules struct {
 	LicenseModules []*LicenseModule `json:"modules"`
 	Links          []Link           `json:"links"`
 }
@@ -30,6 +30,11 @@ type Link struct {
 	Name string `json:"name"`
 }
 
+// usages is a wrapper for a list of Usage
+type usages struct {
+	Usages []*Usage `json:"usages"`
+}
+
 // Usage has the usage details for a license type
 type Usage struct {
 	ID                  string    `json:"id"`
@@ -44,6 +49,10 @@ type Usage struct {
 	AgentType           string    `json:"agentType"`
 	CreatedOn           int64     `json:"createdOn"`
 	CreatedOnIsoDate    time.Time `json:"createdOnIsoDate"`
+}
+
+type properties struct {
+	Properties []*Property `json:"properties"`
 }
 
 // Property is a simple license property
@@ -84,7 +93,7 @@ func (s *AccountService) GetLicenseModules(accID string) ([]*LicenseModule, erro
 		return nil, err
 	}
 
-	var licenseModules *LicenseModules
+	var licenseModules *licenseModules
 	err = s.client.Do(req, &licenseModules)
 	if err != nil {
 		return nil, err
@@ -104,14 +113,37 @@ func (s *AccountService) GetLicenseProperties(accID string, agentType string) ([
 		return nil, err
 	}
 
-	var licenseProperties []*Property
+	var licenseProperties *properties
 	err = s.client.Do(req, &licenseProperties)
 	if err != nil {
-		fmt.Println(err.Code)
+		fmt.Println(err)
+		if err.(*APIError).Code != 404 {
+			return nil, err
+		}
+	}
+
+	return licenseProperties.Properties, nil
+}
+
+// GetLicenseUsages obtains usage data for one agent type
+func (s *AccountService) GetLicenseUsages(accID string, agentType string) ([]*Usage, error) {
+
+	url := fmt.Sprintf("api/accounts/%s/licensemodules/%s/usages?output=json", accID, agentType)
+
+	req, err := s.client.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Println(err.Error())
 		return nil, err
 	}
 
-	return licenseProperties, nil
-}
+	var licenseUsages *usages
+	err = s.client.Do(req, &licenseUsages)
+	if err != nil {
+		fmt.Println(err)
+		if err.(*APIError).Code != 404 {
+			return nil, err
+		}
+	}
 
-// GetLicenseUsage obtains usage data for one agent type
+	return licenseUsages.Usages, nil
+}
