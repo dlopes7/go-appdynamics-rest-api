@@ -9,6 +9,16 @@ import (
 	"net/url"
 )
 
+// Api Error wrapper
+type apiError struct {
+	Message string
+	Code    int
+}
+
+func (e *apiError) Error() string {
+	return fmt.Sprintf("%d - %s", e.Code, e.Message)
+}
+
 // Client manages communication with AppDynamics
 type Client struct {
 	client     *http.Client
@@ -21,6 +31,7 @@ type Client struct {
 	BusinessTransaction *BusinessTransactionService
 	Tier                *TierService
 	MetricData          *MetricDataService
+	Account             *AccountService
 }
 
 type service struct {
@@ -57,6 +68,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.BusinessTransaction = (*BusinessTransactionService)(&c.common)
 	c.Tier = (*TierService)(&c.common)
 	c.MetricData = (*MetricDataService)(&c.common)
+	c.Account = (*AccountService)(&c.common)
 
 	return c
 }
@@ -106,7 +118,11 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		return fmt.Errorf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req)
+		err := &apiError{
+			Code:    resp.StatusCode,
+			Message: fmt.Sprintf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req),
+		}
+		return err
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(v)
