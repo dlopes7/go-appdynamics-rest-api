@@ -4,6 +4,7 @@ import (
 	"net/url"
 )
 
+// Controller represents the AppDynamics Controller
 type Controller struct {
 	Host     string `json:"host"`
 	Port     int    `json:"port"`
