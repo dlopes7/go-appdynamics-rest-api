@@ -9,13 +9,13 @@ import (
 	"net/url"
 )
 
-// Api Error wrapper
-type apiError struct {
+// APIError to get HTTP response code to expected errors
+type APIError struct {
 	Message string
 	Code    int
 }
 
-func (e *apiError) Error() string {
+func (e *APIError) Error() string {
 	return fmt.Sprintf("%d - %s", e.Code, e.Message)
 }
 
@@ -118,7 +118,7 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		err := &apiError{
+		err := &APIError{
 			Code:    resp.StatusCode,
 			Message: fmt.Sprintf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req),
 		}
