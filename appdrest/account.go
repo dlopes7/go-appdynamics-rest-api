@@ -116,10 +116,7 @@ func (s *AccountService) GetLicenseProperties(accID string, agentType string) ([
 	var licenseProperties *properties
 	err = s.client.Do(req, &licenseProperties)
 	if err != nil {
-		fmt.Println(err)
-		if err.(*APIError).Code != 404 {
-			return nil, err
-		}
+		return nil, err
 	}
 
 	return licenseProperties.Properties, nil
@@ -139,10 +136,7 @@ func (s *AccountService) GetLicenseUsages(accID string, agentType string) ([]*Us
 	var licenseUsages *usages
 	err = s.client.Do(req, &licenseUsages)
 	if err != nil {
-		fmt.Println(err)
-		if err.(*APIError).Code != 404 {
-			return nil, err
-		}
+		return nil, err
 	}
 
 	return licenseUsages.Usages, nil
