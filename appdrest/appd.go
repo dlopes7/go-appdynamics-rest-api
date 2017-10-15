@@ -22,7 +22,7 @@ func (e *APIError) Error() string {
 // Client manages communication with AppDynamics
 type Client struct {
 	client     *http.Client
-	controller *Controller
+	Controller *Controller
 
 	//Shared between different APIs
 	common service
@@ -59,7 +59,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	}
 
 	c := &Client{client: httpClient,
-		controller: controller,
+		Controller: controller,
 	}
 
 	c.common.client = c
@@ -81,7 +81,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		return nil, err
 	}
 
-	url := c.controller.BaseURL.ResolveReference(rel)
+	url := c.Controller.BaseURL.ResolveReference(rel)
 
 	var buf io.ReadWriter
 	if body != nil {
@@ -97,7 +97,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		return nil, err
 	}
 
-	req.SetBasicAuth(c.controller.User, c.controller.Password)
+	req.SetBasicAuth(c.Controller.User, c.Controller.Password)
 
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
