@@ -27,11 +27,12 @@ type Client struct {
 	//Shared between different APIs
 	common service
 
+	Account             *AccountService
 	Application         *ApplicationService
 	BusinessTransaction *BusinessTransactionService
-	Tier                *TierService
 	MetricData          *MetricDataService
-	Account             *AccountService
+	Snapshot            *SnapshotService
+	Tier                *TierService
 }
 
 type service struct {
@@ -64,11 +65,12 @@ func NewClient(protocol string, controllerHost string, port int, username string
 
 	c.common.client = c
 
+	c.Account = (*AccountService)(&c.common)
 	c.Application = (*ApplicationService)(&c.common)
 	c.BusinessTransaction = (*BusinessTransactionService)(&c.common)
-	c.Tier = (*TierService)(&c.common)
 	c.MetricData = (*MetricDataService)(&c.common)
-	c.Account = (*AccountService)(&c.common)
+	c.Snapshot = (*SnapshotService)(&c.common)
+	c.Tier = (*TierService)(&c.common)
 
 	return c
 }
