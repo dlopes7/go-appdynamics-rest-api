@@ -90,8 +90,68 @@ const (
 // SnapshotService intermediates Snapshot requests
 type SnapshotService service
 
-// GetSnapshots obtains all Snapshots for a timerange
-func (s *SnapshotService) GetSnapshots(appID int, // Provide either the application name or application id.
+// SnapshotFilters cane be used to obtain a list of snapshots
+type SnapshotFilters struct {
+	Guids                       []string // Array of comma-separated guids for the transaction snapshots. If not specified, retrieves all snapshots in the specified time range
+	Archived                    bool     // True to retrieve archived snapshots. Default is false.
+	DeepDivePolicy              []string // Array of comma-separated snapshot policy filters to apply.
+	ApplicationComponentIds     []int    // Array of comma-separated tier IDs to filters. Default is all the tiers in the application
+	applicationComponentNodeIds []int    // Array of comma-separated node ID filters. Default is all the nodes in the application
+	BusinessTransactionIds      []int    // Array of comma-separated business transaction ID filters. Default is all the business transactions in the application.
+	UserExperience              []string // Array of comma-separated user experiences filters
+	FirstInChain                bool     // If true, retrieve only the first request from the chain. Default is false.
+	NeedProps                   bool     // If true, the values of the following snapshot properties are included in the output. These values correspond to the values of the data-collector-type parameter. If false, the default, these values are empty in the output.
+	NeedExitCalls               bool     // If true, exit calls are included in the result. Default is false.
+	ExecutionTimeInMilis        int      // If set, retrieves only data for requests with execution times greater than this value.
+	SessionID                   string   // If set, retrieves data only for this session id.
+	UserPrincipalID             string   // If set, retrieves data only for this user login.
+	ErrorIDs                    []int    // Array of comma-separated error codes to filter by. Default is to retrieve all error codes.
+	StartingRequestID           string   // If set, retrieves data only for this range of request IDs.
+	EndingRequestID             string   // If set, retrieves data only for this range of request IDs.
+	ErrorOccurred               bool     // If true, retrieves only error requests. Default is false.
+	DiagnosticSnapshot          bool     // If true, retrieves only diagnostic snapshots. Default is false.
+	BadRequest                  bool     // If true, retrieves only slow and error requests. Default is false.
+	DiagnosticSessionGUID       []string // Array of comma-separated diagnostic session guids to filters.
+	DataCollectorName           string   // Used with data-collector-value to filter snapshot collection based on the value of a data collector.
+	DataCollectorValue          string   // Used with data-collector-name to filter snapshot collection based on the value of a data collector.
+	DataCollectorType           string   // Used with data-collector-name and data-collector-value to filter snapshot collection based on the value of a data collector. Some of the values contain spaces. All are case-sensitive and where indicated the spaces are required.
+	MaximumResults              int      // A number, if specified, this number of maximum results will be returned. If not specified, default 600 results can be returned at most.
+}
+
+// GetSnapshots can be called by passing an AppID and a SnapshotFilters struct
+func (s *SnapshotService) GetSnapshots(appID int, timeRangeType string, durationInMins int, startTime time.Time, endTime time.Time, filters *SnapshotFilters) ([]*Snapshot, error) {
+	return s.GetSnapshotsParams(appID, timeRangeType,
+		durationInMins,
+		startTime,
+		endTime,
+		filters.Guids,
+		filters.Archived,
+		filters.DeepDivePolicy,
+		filters.ApplicationComponentIds,
+		filters.applicationComponentNodeIds,
+		filters.BusinessTransactionIds,
+		filters.UserExperience,
+		filters.FirstInChain,
+		filters.NeedProps,
+		filters.NeedExitCalls,
+		filters.ExecutionTimeInMilis,
+		filters.SessionID,
+		filters.UserPrincipalID,
+		filters.ErrorIDs,
+		filters.StartingRequestID,
+		filters.EndingRequestID,
+		filters.ErrorOccurred,
+		filters.DiagnosticSnapshot,
+		filters.BadRequest,
+		filters.DiagnosticSessionGUID,
+		filters.DataCollectorName,
+		filters.DataCollectorValue,
+		filters.DataCollectorType,
+		filters.MaximumResults)
+}
+
+// GetSnapshotsParams obtains all Snapshots for a timerange
+func (s *SnapshotService) GetSnapshotsParams(appID int, // Provide either the application name or application id.
 	timeRangeType string, // Consts TimeBEFORENOW, TimeBEFORETIME, TimeAFTERTIME, TimeBETWEENTIMES
 	durationInMins int, // Duration (in minutes) to return the data.
 	startTime time.Time, // Start time (in milliseconds) from which the data is returned.
@@ -99,7 +159,7 @@ func (s *SnapshotService) GetSnapshots(appID int, // Provide either the applicat
 	guids []string, // Array of comma-separated guids for the transaction snapshots. If not specified, retrieves all snapshots in the specified time range
 	archived bool, // True to retrieve archived snapshots. Default is false.
 	deepDivePolicy []string, // Array of comma-separated snapshot policy filters to apply.
-	applicationComponentIds []int, // Array of comma-separated tier IDs to filter. Default is all the tiers in the application
+	applicationComponentIds []int, // Array of comma-separated tier IDs to filters. Default is all the tiers in the application
 	applicationComponentNodeIds []int, // Array of comma-separated node ID filters. Default is all the nodes in the application
 	businessTransactionIds []int, // Array of comma-separated business transaction ID filters. Default is all the business transactions in the application.
 	userExperience []string, // Array of comma-separated user experiences filters
@@ -115,7 +175,7 @@ func (s *SnapshotService) GetSnapshots(appID int, // Provide either the applicat
 	errorOccurred bool, // If true, retrieves only error requests. Default is false.
 	diagnosticSnapshot bool, // If true, retrieves only diagnostic snapshots. Default is false.
 	badRequest bool, // If true, retrieves only slow and error requests. Default is false.
-	diagnosticSessionGUID []string, // Array of comma-separated diagnostic session guids to filter.
+	diagnosticSessionGUID []string, // Array of comma-separated diagnostic session guids to filters.
 	dataCollectorName string, // Used with data-collector-value to filter snapshot collection based on the value of a data collector.
 	dataCollectorValue string, // Used with data-collector-name to filter snapshot collection based on the value of a data collector.
 	dataCollectorType string, // Used with data-collector-name and data-collector-value to filter snapshot collection based on the value of a data collector. Some of the values contain spaces. All are case-sensitive and where indicated the spaces are required.
