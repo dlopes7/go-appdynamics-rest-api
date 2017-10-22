@@ -36,10 +36,10 @@ type Metric struct {
 
 // Consts for the technique used to obtain metric data
 const (
-	BeforeNow    = "BEFORE_NOW"
-	BeforeTime   = "BEFORE_TIME"
-	AfterTime    = "AFTER_TIME"
-	BetweenTimes = "BETWEEN_TIMES"
+	TimeBEFORENOW    = "BEFORE_NOW"
+	TimeBEFORETIME   = "BEFORE_TIME"
+	TimeAFTERTIME    = "AFTER_TIME"
+	TimeBETWEENTIMES = "BETWEEN_TIMES"
 )
 
 // MetricDataService intermediates MetricData requests
@@ -54,14 +54,14 @@ func (s *MetricDataService) GetMetricData(appID int, metricPath string, rollup b
 	url += fmt.Sprintf("&metric-path=%s", metricPath)
 	url += fmt.Sprintf("&time-range-type=%s", timeRangeType)
 
-	if timeRangeType == BeforeNow || timeRangeType == BeforeTime || timeRangeType == AfterTime {
+	if timeRangeType == TimeBEFORENOW || timeRangeType == TimeBEFORETIME || timeRangeType == TimeAFTERTIME {
 		url += fmt.Sprintf("&duration-in-mins=%d", durationInMins)
 
 	}
-	if timeRangeType == AfterTime || timeRangeType == BetweenTimes {
+	if timeRangeType == TimeAFTERTIME || timeRangeType == TimeBETWEENTIMES {
 		url += fmt.Sprintf("&start-time=%v", startTime)
 	}
-	if timeRangeType == BeforeTime || timeRangeType == BetweenTimes {
+	if timeRangeType == TimeBEFORETIME || timeRangeType == TimeBETWEENTIMES {
 		url += fmt.Sprintf("&end-time=%v", endTime)
 	}
 
