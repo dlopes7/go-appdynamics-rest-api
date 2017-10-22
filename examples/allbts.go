@@ -1,4 +1,4 @@
-package main
+package examples
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"github.com/dlopes7/go-appdynamics-rest-api/appdrest"
 )
 
-func main() {
+func getAllBTs() {
 	client := appdrest.NewClient("http", "192.168.33.10", 8090, "admin", "password", "customer1")
 
 	apps, err := client.Application.GetApplications()
