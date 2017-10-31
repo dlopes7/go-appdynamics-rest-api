@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+type ErrorDetail struct {
+	Name  string `json:"name"`
+	ID    int    `json:"id"`
+	Value string `json:"value"`
+}
+
 // Snapshot represents one Snapshot within one Application
 type Snapshot struct {
 	FirstInChain                   bool          `json:"firstInChain"`
@@ -33,7 +39,7 @@ type Snapshot struct {
 	ApplicationID                  int           `json:"applicationId"`
 	ExitCallsDataTruncationMessage string        `json:"exitCallsDataTruncationMessage"`
 	HTTPParameters                 []interface{} `json:"httpParameters"`
-	ErrorDetails                   []interface{} `json:"errorDetails"`
+	ErrorDetails                   []ErrorDetail `json:"errorDetails"`
 	ApplicationComponentID         int           `json:"applicationComponentId"`
 	DelayedDeepDiveOffSet          int           `json:"delayedDeepDiveOffSet"`
 	UserExperience                 string        `json:"userExperience"`
@@ -191,10 +197,10 @@ func (s *SnapshotService) GetSnapshotsParams(appID int, // Provide either the ap
 
 	}
 	if timeRangeType == TimeAFTERTIME || timeRangeType == TimeBETWEENTIMES {
-		url += fmt.Sprintf("&start-time=%v", startTime)
+		url += fmt.Sprintf("&start-time=%v", startTime.Unix()*1000)
 	}
 	if timeRangeType == TimeBEFORETIME || timeRangeType == TimeBETWEENTIMES {
-		url += fmt.Sprintf("&end-time=%v", endTime)
+		url += fmt.Sprintf("&end-time=%v", endTime.Unix()*1000)
 	}
 
 	if len(guids) > 0 {
