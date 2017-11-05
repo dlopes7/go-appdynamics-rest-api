@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // APIError to get HTTP response code to expected errors
@@ -30,6 +31,7 @@ type Client struct {
 	Account             *AccountService
 	Application         *ApplicationService
 	BusinessTransaction *BusinessTransactionService
+	Dashboard           *DashboardService
 	MetricData          *MetricDataService
 	Snapshot            *SnapshotService
 	Tier                *TierService
@@ -43,7 +45,7 @@ type service struct {
 func NewClient(protocol string, controllerHost string, port int, username string, password string, account string) *Client {
 
 	httpClient := http.DefaultClient
-	baseURL, err := url.Parse(fmt.Sprintf("%s://%s:%d/controller/", protocol, controllerHost, port))
+	baseURL, err := url.Parse(fmt.Sprintf("%s://%s:%d/", protocol, controllerHost, port))
 	if err != nil {
 		panic(err.Error())
 	}
@@ -71,6 +73,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.MetricData = (*MetricDataService)(&c.common)
 	c.Snapshot = (*SnapshotService)(&c.common)
 	c.Tier = (*TierService)(&c.common)
+	c.Dashboard = (*DashboardService)(&c.common)
 
 	return c
 }
@@ -128,6 +131,77 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(v)
+	return nil
+
+}
+
+// DoRestUI makes the http request using authentication. This will break with different versions of AppDynamics
+func (c *Client) DoRestUI(req *http.Request, v interface{}) error {
+
+	req.URL.RawQuery = req.URL.Query().Encode()
+
+	if len(req.Header["X-CSRF-TOKEN"]) == 0 {
+		err := c.login(req)
+		if err != nil {
+			panic(err.Error())
+		}
+
+	}
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		err := &APIError{
+			Code:    resp.StatusCode,
+			Message: fmt.Sprintf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req),
+		}
+		return err
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(v)
+	return nil
+
+}
+
+func (c *Client) login(req *http.Request) error {
+
+	url := "/auth?action=login"
+
+	loginReq, err := c.NewRequest("GET", url, nil)
+	if err != nil {
+		return err
+	}
+
+	loginReq.URL.RawQuery = loginReq.URL.Query().Encode()
+	resp, err := c.client.Do(loginReq)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		err := &APIError{
+			Code:    resp.StatusCode,
+			Message: fmt.Sprintf("LOGIN - Status Code Error: %d\nRequest: %v", resp.StatusCode, loginReq),
+		}
+		return err
+	}
+
+	csrfToken := ""
+	for _, cookie := range resp.Header["Set-Cookie"] {
+		if strings.Contains(cookie, "X-CSRF-TOKEN") {
+			csrfToken = strings.Split(cookie, "=")[1]
+		}
+	}
+	req.Header.Set("X-CSRF-TOKEN", csrfToken)
+	req.Header.Set("Accept", "application/json, text/plain, */*")
+	req.Header.Set("Cookie", strings.Join(resp.Header["Set-Cookie"], ";"))
+
 	return nil
 
 }
