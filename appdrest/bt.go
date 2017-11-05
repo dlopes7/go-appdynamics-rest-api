@@ -21,7 +21,7 @@ type BusinessTransactionService service
 // GetBusinessTransactions obtains all BTs from an application
 func (s *BusinessTransactionService) GetBusinessTransactions(appID int) ([]*BusinessTransaction, error) {
 
-	url := fmt.Sprintf("rest/applications/%d/business-transactions?output=json", appID)
+	url := fmt.Sprintf("controller/rest/applications/%d/business-transactions?output=json", appID)
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {

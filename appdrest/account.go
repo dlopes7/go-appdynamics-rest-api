@@ -67,7 +67,7 @@ type AccountService service
 // GetMyAccount obtains an Account object
 func (s *AccountService) GetMyAccount() (*Account, error) {
 
-	url := "api/accounts/myaccount"
+	url := "controller/api/accounts/myaccount"
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
@@ -86,7 +86,7 @@ func (s *AccountService) GetMyAccount() (*Account, error) {
 // GetLicenseModules obtains all license modules and links
 func (s *AccountService) GetLicenseModules(accID string) ([]*LicenseModule, error) {
 
-	url := fmt.Sprintf("api/accounts/%s/licensemodules?output=json", accID)
+	url := fmt.Sprintf("controller/api/accounts/%s/licensemodules?output=json", accID)
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
@@ -105,7 +105,7 @@ func (s *AccountService) GetLicenseModules(accID string) ([]*LicenseModule, erro
 // GetLicenseProperties obtains all properties for one agent type
 func (s *AccountService) GetLicenseProperties(accID string, agentType string) ([]*Property, error) {
 
-	url := fmt.Sprintf("api/accounts/%s/licensemodules/%s/properties?output=json", accID, agentType)
+	url := fmt.Sprintf("controller/api/accounts/%s/licensemodules/%s/properties?output=json", accID, agentType)
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
@@ -125,7 +125,7 @@ func (s *AccountService) GetLicenseProperties(accID string, agentType string) ([
 // GetLicenseUsages obtains usage data for one agent type
 func (s *AccountService) GetLicenseUsages(accID string, agentType string) ([]*Usage, error) {
 
-	url := fmt.Sprintf("api/accounts/%s/licensemodules/%s/usages?output=json", accID, agentType)
+	url := fmt.Sprintf("controller/api/accounts/%s/licensemodules/%s/usages?output=json", accID, agentType)
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {

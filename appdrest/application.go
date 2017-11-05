@@ -17,7 +17,7 @@ type ApplicationService service
 // GetApplications obtains all applications from a controller
 func (s *ApplicationService) GetApplications() ([]*Application, error) {
 
-	url := "rest/applications?output=json"
+	url := "controller/rest/applications?output=json"
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {

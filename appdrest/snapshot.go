@@ -188,7 +188,7 @@ func (s *SnapshotService) GetSnapshotsParams(appID int, // Provide either the ap
 	maximumResults int, // A number, if specified, this number of maximum results will be returned. If not specified, default 600 results can be returned at most.
 ) ([]*Snapshot, error) {
 
-	url := fmt.Sprintf("rest/applications/%d/request-snapshots?output=json", appID)
+	url := fmt.Sprintf("controller/rest/applications/%d/request-snapshots?output=json", appID)
 
 	url += fmt.Sprintf("&time-range-type=%s", timeRangeType)
 

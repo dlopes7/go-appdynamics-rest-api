@@ -20,7 +20,7 @@ type TierService service
 // GetTiers obtains all Tiers from an Application
 func (s *TierService) GetTiers(appID int) ([]*Tier, error) {
 
-	url := fmt.Sprintf("rest/applications/%d/tiers?output=json", appID)
+	url := fmt.Sprintf("controller/rest/applications/%d/tiers?output=json", appID)
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
