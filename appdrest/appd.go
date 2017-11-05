@@ -7,7 +7,10 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
+
+	"github.com/op/go-logging"
 )
 
 // APIError to get HTTP response code to expected errors
@@ -28,6 +31,8 @@ type Client struct {
 	//Shared between different APIs
 	common service
 
+	log *logging.Logger
+
 	Account             *AccountService
 	Application         *ApplicationService
 	BusinessTransaction *BusinessTransactionService
@@ -40,6 +45,11 @@ type Client struct {
 type service struct {
 	client *Client
 }
+
+var log = logging.MustGetLogger("appdrest")
+var format = logging.MustStringFormatter(
+	`%{color}%{time:15:04:05.000} %{shortfunc} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}`,
+)
 
 // NewClient Returns a Client, this is needed for any communication
 func NewClient(protocol string, controllerHost string, port int, username string, password string, account string) *Client {
@@ -65,6 +75,14 @@ func NewClient(protocol string, controllerHost string, port int, username string
 		Controller: controller,
 	}
 
+	backend1 := logging.NewLogBackend(os.Stdout, "", 0)
+	backend1Formatter := logging.NewBackendFormatter(backend1, format)
+	backend1Leveled := logging.AddModuleLevel(backend1Formatter)
+	backend1Leveled.SetLevel(logging.DEBUG, "")
+
+	logging.SetBackend(backend1Leveled)
+
+	c.log = log
 	c.common.client = c
 
 	c.Account = (*AccountService)(&c.common)
@@ -75,6 +93,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.Tier = (*TierService)(&c.common)
 	c.Dashboard = (*DashboardService)(&c.common)
 
+	c.log.Debug("Created client successfully")
 	return c
 }
 
@@ -85,7 +104,6 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	if err != nil {
 		return nil, err
 	}
-
 	url := c.Controller.BaseURL.ResolveReference(rel)
 
 	var buf io.ReadWriter
@@ -97,6 +115,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		}
 	}
 
+	c.log.Debugf("Creating request %s %s", method, url.String())
 	req, err := http.NewRequest(method, url.String(), buf)
 	if err != nil {
 		return nil, err
@@ -115,10 +134,12 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 func (c *Client) Do(req *http.Request, v interface{}) error {
 
 	req.URL.RawQuery = req.URL.Query().Encode()
+
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return err
 	}
+	c.log.Debugf("Performed request %v - HTTP %d", req.URL, resp.StatusCode)
 
 	defer resp.Body.Close()
 
@@ -141,16 +162,19 @@ func (c *Client) DoRestUI(req *http.Request, v interface{}) error {
 	req.URL.RawQuery = req.URL.Query().Encode()
 
 	if len(req.Header["X-CSRF-TOKEN"]) == 0 {
+		c.log.Debugf("RESTUI, logging in...")
 		err := c.login(req)
 		if err != nil {
 			panic(err.Error())
 		}
 
 	}
+
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return err
 	}
+	c.log.Debugf("Performed request %v - HTTP %d", req.URL, resp.StatusCode)
 
 	defer resp.Body.Close()
 
@@ -179,8 +203,10 @@ func (c *Client) login(req *http.Request) error {
 	loginReq.URL.RawQuery = loginReq.URL.Query().Encode()
 	resp, err := c.client.Do(loginReq)
 	if err != nil {
+		c.log.Errorf("%v", err)
 		return err
 	}
+	c.log.Debugf("Performed request %v - HTTP %d", loginReq.URL, resp.StatusCode)
 
 	defer resp.Body.Close()
 

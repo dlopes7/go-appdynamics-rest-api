@@ -150,3 +150,9 @@ func (s *DashboardService) GetDashboard(ID int) (*Dashboard, error) {
 
 	return dashboard, nil
 }
+
+// TODO: Implement UpdateWidget
+// UpdateWidget updates a Widget of a Dashboard ID
+// func (s *DashboardService) UpdateWidget(dashboardID int, widget *Widget) {
+// /controller/restui/dashboards/updateWidget
+// }

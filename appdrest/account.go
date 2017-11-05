@@ -109,7 +109,7 @@ func (s *AccountService) GetLicenseProperties(accID string, agentType string) ([
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Println(err.Error())
+		s.client.log.Error(err.Error())
 		return nil, err
 	}
 
@@ -129,7 +129,7 @@ func (s *AccountService) GetLicenseUsages(accID string, agentType string) ([]*Us
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Println(err.Error())
+		s.client.log.Error(err.Error())
 		return nil, err
 	}
 
