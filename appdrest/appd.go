@@ -48,7 +48,7 @@ type service struct {
 
 var log = logging.MustGetLogger("appdrest")
 var format = logging.MustStringFormatter(
-	`%{color}%{time:15:04:05.000} %{level:.4s} %{shortfunc} %{id:03x}%{color:reset} %{message}`,
+	`%{color}%{time:15:04:05.000} %{level} %{shortfunc} %{id:03x}%{color:reset} %{message}`,
 )
 
 // NewClient Returns a Client, this is needed for any communication
