@@ -1,6 +1,8 @@
 # appdrest #
-
-Library to access the [AppDynamics REST API](https://docs.appdynamics.com/display/PRO43/AppDynamics+APIs)
+  
+[![CircleCI](https://circleci.com/gh/dlopes7/go-appdynamics-rest-api.svg?style=svg)](https://circleci.com/gh/dlopes7/go-appdynamics-rest-api)
+  
+Library to access the [AppDynamics REST API](https://docs.appdynamics.com/display/PRO43/AppDynamics+APIs)  
 
 ## Usage ##
 ```go
