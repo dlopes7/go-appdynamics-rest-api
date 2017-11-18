@@ -146,7 +146,7 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	if resp.StatusCode >= 400 {
 		err := &APIError{
 			Code:    resp.StatusCode,
-			Message: fmt.Sprintf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req),
+			Message: fmt.Sprintf("Status Code Error: %d\n", resp.StatusCode),
 		}
 		return err
 	}
