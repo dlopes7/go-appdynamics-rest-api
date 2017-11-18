@@ -8,9 +8,8 @@ import (
 	"os"
 )
 
-var client = appdrest.NewClient("http", "demo2.appdynamics.com", 80, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
-
 func TestGetApplications(t *testing.T) {
+	client := appdrest.NewClient("http", "demo2.appdynamics.com", 80, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	apps, err := client.Application.GetApplications()
 	if err != nil {
 		t.Errorf("Error getting applications: %s\n", err.Error())
