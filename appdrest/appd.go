@@ -78,7 +78,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	backend1 := logging.NewLogBackend(os.Stdout, "", 0)
 	backend1Formatter := logging.NewBackendFormatter(backend1, format)
 	backend1Leveled := logging.AddModuleLevel(backend1Formatter)
-	backend1Leveled.SetLevel(logging.DEBUG, "")
+	backend1Leveled.SetLevel(logging.ERROR, "")
 
 	logging.SetBackend(backend1Leveled)
 

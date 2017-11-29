@@ -59,10 +59,10 @@ func (s *MetricDataService) GetMetricData(appIDOrName string, metricPath string,
 
 	}
 	if timeRangeType == TimeAFTERTIME || timeRangeType == TimeBETWEENTIMES {
-		url += fmt.Sprintf("&start-time=%v", startTime)
+		url += fmt.Sprintf("&start-time=%v", startTime.UnixNano()/(int64(time.Millisecond)/int64(time.Nanosecond)))
 	}
 	if timeRangeType == TimeBEFORETIME || timeRangeType == TimeBETWEENTIMES {
-		url += fmt.Sprintf("&end-time=%v", endTime)
+		url += fmt.Sprintf("&end-time=%v", endTime.UnixNano()/(int64(time.Millisecond)/int64(time.Nanosecond)))
 	}
 
 	req, err := s.client.NewRequest("GET", url, nil)
