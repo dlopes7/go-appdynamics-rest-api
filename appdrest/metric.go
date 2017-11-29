@@ -46,9 +46,9 @@ const (
 type MetricDataService service
 
 // GetMetricData obtains metrics matching a pattern
-func (s *MetricDataService) GetMetricData(appID int, metricPath string, rollup bool, timeRangeType string, durationInMins int, startTime time.Time, endTime time.Time) ([]*MetricData, error) {
+func (s *MetricDataService) GetMetricData(appIDOrName string, metricPath string, rollup bool, timeRangeType string, durationInMins int, startTime time.Time, endTime time.Time) ([]*MetricData, error) {
 
-	url := fmt.Sprintf("controller/rest/applications/%d/metric-data?output=json", appID)
+	url := fmt.Sprintf("controller/rest/applications/%v/metric-data?output=json", appIDOrName)
 	url += fmt.Sprintf("&rollup=%t", rollup)
 
 	url += fmt.Sprintf("&metric-path=%s", metricPath)
@@ -80,8 +80,8 @@ func (s *MetricDataService) GetMetricData(appID int, metricPath string, rollup b
 }
 
 // GetMetricHierarchy obtains the Metric Browser hierarchy
-func (s *MetricDataService) GetMetricHierarchy(appID int, metricPath string) ([]*Metric, error) {
-	url := fmt.Sprintf("controller/rest/applications/%d/metrics?output=json", appID)
+func (s *MetricDataService) GetMetricHierarchy(appIDOrName string, metricPath string) ([]*Metric, error) {
+	url := fmt.Sprintf("controller/rest/applications/%v/metrics?output=json", appIDOrName)
 
 	if metricPath != "" {
 		url += fmt.Sprintf("&metric-path=%s", metricPath)

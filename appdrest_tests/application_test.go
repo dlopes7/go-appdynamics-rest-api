@@ -40,4 +40,13 @@ func TestGetApplication(t *testing.T) {
 	if len(app.Name) == 0 || app.ID <= 0 {
 		t.Errorf("Error getting Application properties for %s", apps[0].Name)
 	}
+
+	app, err = client.Application.GetApplication(apps[0].Name)
+	if err != nil {
+		t.Errorf("Error getting Application %s", apps[0].Name)
+		t.FailNow()
+	}
+	if len(app.Name) == 0 || app.ID <= 0 {
+		t.Errorf("Error getting Application properties for %s", apps[0].Name)
+	}
 }
