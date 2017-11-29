@@ -79,7 +79,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	backend1 := logging.NewLogBackend(os.Stdout, "", 0)
 	backend1Formatter := logging.NewBackendFormatter(backend1, format)
 	backend1Leveled := logging.AddModuleLevel(backend1Formatter)
-	backend1Leveled.SetLevel(logging.DEBUG, "")
+	backend1Leveled.SetLevel(logging.ERROR, "")
 
 	logging.SetBackend(backend1Leveled)
 
@@ -148,8 +148,9 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	if resp.StatusCode >= 400 {
 		err := &APIError{
 			Code:    resp.StatusCode,
-			Message: fmt.Sprintf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req),
+			Message: fmt.Sprintf("Status Code Error: %d\n", resp.StatusCode),
 		}
+		c.log.Errorf("Error doing request %v\n", resp)
 		return err
 	}
 

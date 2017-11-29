@@ -36,7 +36,7 @@ func (s *ApplicationService) GetApplications() ([]*Application, error) {
 // GetApplication gets an Application by Name or ID
 func (s *ApplicationService) GetApplication(appNameOrID string) (*Application, error) {
 
-	url := fmt.Sprintf("rest/applications/%s?output=json", appNameOrID)
+	url := fmt.Sprintf("controller/rest/applications/%s?output=json", appNameOrID)
 
 	req, err := s.client.NewRequest("GET", url, nil)
 	if err != nil {
