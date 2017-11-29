@@ -155,6 +155,9 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(v)
+	if err != nil {
+		return err
+	}
 	return nil
 
 }
@@ -191,6 +194,9 @@ func (c *Client) DoRestUI(req *http.Request, v interface{}) error {
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(v)
+	if err != nil {
+		return err
+	}
 	return nil
 
 }
