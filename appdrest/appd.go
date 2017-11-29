@@ -35,6 +35,7 @@ type Client struct {
 
 	Account             *AccountService
 	Application         *ApplicationService
+	BrowserSnapshot     *BrowserSnapshotService
 	BusinessTransaction *BusinessTransactionService
 	Dashboard           *DashboardService
 	MetricData          *MetricDataService
@@ -87,6 +88,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 
 	c.Account = (*AccountService)(&c.common)
 	c.Application = (*ApplicationService)(&c.common)
+	c.BrowserSnapshot = (*BrowserSnapshotService)(&c.common)
 	c.BusinessTransaction = (*BusinessTransactionService)(&c.common)
 	c.MetricData = (*MetricDataService)(&c.common)
 	c.Snapshot = (*SnapshotService)(&c.common)
@@ -183,6 +185,7 @@ func (c *Client) DoRestUI(req *http.Request, v interface{}) error {
 			Code:    resp.StatusCode,
 			Message: fmt.Sprintf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req),
 		}
+		c.log.Errorf("%v\n", err)
 		return err
 	}
 
