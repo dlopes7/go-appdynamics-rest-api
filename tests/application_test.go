@@ -1,4 +1,4 @@
-package appdrest_tests
+package tests
 
 import (
 	"strconv"
@@ -10,7 +10,8 @@ import (
 )
 
 func TestGetApplications(t *testing.T) {
-	client := appdrest.NewClient("http", "demo2.appdynamics.com", 80, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
+	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	apps, err := client.Application.GetApplications()
 	if err != nil {
 		t.Errorf("Error getting applications: %s\n", err.Error())
@@ -22,7 +23,8 @@ func TestGetApplications(t *testing.T) {
 }
 
 func TestGetApplication(t *testing.T) {
-	client := appdrest.NewClient("http", "demo2.appdynamics.com", 80, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
+	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	apps, err := client.Application.GetApplications()
 	if err != nil {
 		t.Errorf("Error getting applications: %s\n", err.Error())
