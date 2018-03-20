@@ -41,6 +41,7 @@ type Client struct {
 	MetricData          *MetricDataService
 	Snapshot            *SnapshotService
 	Tier                *TierService
+	Node                *NodeService
 }
 
 type service struct {
@@ -94,6 +95,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.Snapshot = (*SnapshotService)(&c.common)
 	c.Tier = (*TierService)(&c.common)
 	c.Dashboard = (*DashboardService)(&c.common)
+	c.Node = (*NodeService)(&c.common)
 
 	c.log.Debug("Created client successfully")
 	return c
