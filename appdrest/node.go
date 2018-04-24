@@ -55,11 +55,11 @@ func (s *NodeService) GetNode(appIDOrName string, nodeNameOrID string) (*Node, e
 		return nil, err
 	}
 
-	var node *Node
-	err = s.client.Do(req, node)
+	var nodes []*Node
+	err = s.client.Do(req, &nodes)
 	if err != nil {
 		return nil, err
 	}
 
-	return node, nil
+	return nodes[0], nil
 }
