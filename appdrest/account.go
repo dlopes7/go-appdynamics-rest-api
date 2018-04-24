@@ -38,14 +38,14 @@ type usages struct {
 // Usage has the usage details for a license type
 type Usage struct {
 	ID                  string    `json:"id"`
-	MaxUnitsUsed        int       `json:"maxUnitsUsed"`
-	MinUnitsUsed        int       `json:"minUnitsUsed"`
-	AvgUnitsUsed        int       `json:"avgUnitsUsed"`
-	TotalUnitsUsed      int       `json:"totalUnitsUsed"`
-	SampleCount         int       `json:"sampleCount"`
-	AvgUnitsAllowed     int       `json:"avgUnitsAllowed"`
-	AvgUnitsProvisioned int       `json:"avgUnitsProvisioned"`
-	AccountID           int       `json:"accountId"`
+	MaxUnitsUsed        float64   `json:"maxUnitsUsed"`
+	MinUnitsUsed        float64   `json:"minUnitsUsed"`
+	AvgUnitsUsed        float64   `json:"avgUnitsUsed"`
+	TotalUnitsUsed      float64   `json:"totalUnitsUsed"`
+	SampleCount         float64   `json:"sampleCount"`
+	AvgUnitsAllowed     float64   `json:"avgUnitsAllowed"`
+	AvgUnitsProvisioned float64   `json:"avgUnitsProvisioned"`
+	AccountID           float64   `json:"accountId"`
 	AgentType           string    `json:"agentType"`
 	CreatedOn           int64     `json:"createdOn"`
 	CreatedOnIsoDate    time.Time `json:"createdOnIsoDate"`
