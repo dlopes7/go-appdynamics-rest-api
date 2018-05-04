@@ -46,3 +46,15 @@ func TestGetApplication(t *testing.T) {
 		t.Errorf("Error getting Application properties for %s", apps[0].Name)
 	}
 }
+
+func TestGetApplicationsAllTypes(t *testing.T) {
+	client := CreateClient()
+	apps, err := client.Application.GetApplicationsAllTypes()
+	if err != nil {
+		t.Errorf("Error getting applications: %s\n", err.Error())
+		t.FailNow()
+	}
+	if len(apps) == 0 {
+		t.Error("No applications were returned")
+	}
+}
