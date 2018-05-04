@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/op/go-logging"
 )
@@ -56,7 +57,11 @@ var format = logging.MustStringFormatter(
 // NewClient Returns a Client, this is needed for any communication
 func NewClient(protocol string, controllerHost string, port int, username string, password string, account string) *Client {
 
-	httpClient := http.DefaultClient
+	// TODO: Let the consumer define the http.Client
+	timeout := time.Duration(60 * time.Second)
+	httpClient := &http.Client{
+		Timeout: timeout,
+	}
 	baseURL, err := url.Parse(fmt.Sprintf("%s://%s:%d/", protocol, controllerHost, port))
 	if err != nil {
 		panic(err.Error())
@@ -84,6 +89,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 
 	logging.SetBackend(backend1Leveled)
 
+	// TODO: Let the consumer define the logger
 	c.log = log
 	c.common.client = c
 
