@@ -1,19 +1,14 @@
 package tests
 
 import (
-	"strconv"
 	"testing"
 	"time"
 
 	"github.com/dlopes7/go-appdynamics-rest-api/appdrest"
-
-	"os"
 )
 
 func TestGetSnapshots(t *testing.T) {
-	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
-
+	client := CreateClient()
 	apps, err := client.Application.GetApplications()
 	if err != nil {
 		t.Errorf("Error getting apps: %s\n", err.Error())
@@ -27,7 +22,7 @@ func TestGetSnapshots(t *testing.T) {
 			t.Errorf("Error getting snapshots: %s\n", err.Error())
 			t.FailNow()
 		}
-		t.Logf("Got %d snapshots from the app %s", len(snapshots), app.Name)
+		t.Logf("Got %d snapshots from app %s", len(snapshots), app.Name)
 
 	}
 
