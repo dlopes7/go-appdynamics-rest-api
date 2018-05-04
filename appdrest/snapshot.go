@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// ErrorDetail details the errors that are present on the Snapshot
 type ErrorDetail struct {
 	Name  string `json:"name"`
 	ID    int    `json:"id"`
@@ -96,13 +97,13 @@ const (
 // SnapshotService intermediates Snapshot requests
 type SnapshotService service
 
-// SnapshotFilters cane be used to obtain a list of snapshots
+// SnapshotFilters can be used to obtain a list of snapshots
 type SnapshotFilters struct {
 	Guids                       []string // Array of comma-separated guids for the transaction snapshots. If not specified, retrieves all snapshots in the specified time range
 	Archived                    bool     // True to retrieve archived snapshots. Default is false.
 	DeepDivePolicy              []string // Array of comma-separated snapshot policy filters to apply.
 	ApplicationComponentIds     []int    // Array of comma-separated tier IDs to filters. Default is all the tiers in the application
-	applicationComponentNodeIds []int    // Array of comma-separated node ID filters. Default is all the nodes in the application
+	ApplicationComponentNodeIds []int    // Array of comma-separated node ID filters. Default is all the nodes in the application
 	BusinessTransactionIds      []int    // Array of comma-separated business transaction ID filters. Default is all the business transactions in the application.
 	UserExperience              []string // Array of comma-separated user experiences filters
 	FirstInChain                bool     // If true, retrieve only the first request from the chain. Default is false.
@@ -126,7 +127,7 @@ type SnapshotFilters struct {
 
 // GetSnapshots can be called by passing an AppID and a SnapshotFilters struct
 func (s *SnapshotService) GetSnapshots(appID int, timeRangeType string, durationInMins int, startTime time.Time, endTime time.Time, filters *SnapshotFilters) ([]*Snapshot, error) {
-	return s.GetSnapshotsParams(appID, timeRangeType,
+	return s.getSnapshotsParams(appID, timeRangeType,
 		durationInMins,
 		startTime,
 		endTime,
@@ -134,7 +135,7 @@ func (s *SnapshotService) GetSnapshots(appID int, timeRangeType string, duration
 		filters.Archived,
 		filters.DeepDivePolicy,
 		filters.ApplicationComponentIds,
-		filters.applicationComponentNodeIds,
+		filters.ApplicationComponentNodeIds,
 		filters.BusinessTransactionIds,
 		filters.UserExperience,
 		filters.FirstInChain,
@@ -157,7 +158,7 @@ func (s *SnapshotService) GetSnapshots(appID int, timeRangeType string, duration
 }
 
 // GetSnapshotsParams obtains all Snapshots for a timerange
-func (s *SnapshotService) GetSnapshotsParams(appID int, // Provide either the application name or application id.
+func (s *SnapshotService) getSnapshotsParams(appID int, // Provide either the application name or application id.
 	timeRangeType string, // Consts TimeBEFORENOW, TimeBEFORETIME, TimeAFTERTIME, TimeBETWEENTIMES
 	durationInMins int, // Duration (in minutes) to return the data.
 	startTime time.Time, // Start time (in milliseconds) from which the data is returned.
