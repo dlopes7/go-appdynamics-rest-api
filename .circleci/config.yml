@@ -5,7 +5,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang
+      - image: circleci/golang:latest
       working_directory: /go/src/github.com/dlopes7/go-appdynamics-rest-api
     steps:
       - checkout
