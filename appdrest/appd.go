@@ -80,7 +80,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	backend1 := logging.NewLogBackend(os.Stdout, "", 0)
 	backend1Formatter := logging.NewBackendFormatter(backend1, format)
 	backend1Leveled := logging.AddModuleLevel(backend1Formatter)
-	backend1Leveled.SetLevel(logging.ERROR, "")
+	backend1Leveled.SetLevel(logging.DEBUG, "")
 
 	logging.SetBackend(backend1Leveled)
 
@@ -231,9 +231,9 @@ func (c *Client) login(req *http.Request) error {
 	}
 
 	csrfToken := ""
-	for _, cookie := range resp.Header["Set-Cookie"] {
-		if strings.Contains(cookie, "X-CSRF-TOKEN") {
-			csrfToken = strings.Split(cookie, "=")[1]
+	for _, cookie := range resp.Cookies() {
+		if cookie.Name == "X-CSRF-TOKEN" {
+			csrfToken = cookie.Value
 		}
 	}
 	req.Header.Set("X-CSRF-TOKEN", csrfToken)
