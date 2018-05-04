@@ -1,12 +1,16 @@
 package tests
 
 import (
+	"os"
 	"strconv"
 	"testing"
+
+	"github.com/dlopes7/go-appdynamics-rest-api/appdrest"
 )
 
 func TestGetApplications(t *testing.T) {
-	client := CreateClient()
+	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
+	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	apps, err := client.Application.GetApplications()
 	if err != nil {
 		t.Errorf("Error getting applications: %s\n", err.Error())
@@ -18,7 +22,8 @@ func TestGetApplications(t *testing.T) {
 }
 
 func TestGetApplication(t *testing.T) {
-	client := CreateClient()
+	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
+	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	apps, err := client.Application.GetApplications()
 	if err != nil {
 		t.Errorf("Error getting applications: %s\n", err.Error())
@@ -48,7 +53,8 @@ func TestGetApplication(t *testing.T) {
 }
 
 func TestGetApplicationsAllTypes(t *testing.T) {
-	client := CreateClient()
+	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
+	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	apps, err := client.Application.GetApplicationsAllTypes()
 	if err != nil {
 		t.Errorf("Error getting applications: %s\n", err.Error())
