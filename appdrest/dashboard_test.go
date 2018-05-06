@@ -1,4 +1,4 @@
-package tests
+package appdrest_test
 
 import (
 	"os"

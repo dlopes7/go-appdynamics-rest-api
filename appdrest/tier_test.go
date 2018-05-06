@@ -1,15 +1,14 @@
-package tests
+package appdrest_test
 
 import (
 	"os"
 	"strconv"
 	"testing"
-	"time"
 
 	"github.com/dlopes7/go-appdynamics-rest-api/appdrest"
 )
 
-func TestGetSnapshots(t *testing.T) {
+func TestGetTiers(t *testing.T) {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
 	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	apps, err := client.Application.GetApplications()
@@ -19,14 +18,11 @@ func TestGetSnapshots(t *testing.T) {
 	}
 	if len(apps) > 0 {
 		app := apps[0]
-		filters := &appdrest.SnapshotFilters{}
-		snapshots, err := client.Snapshot.GetSnapshots(app.ID, appdrest.TimeBEFORENOW, 15, time.Now(), time.Now(), filters)
+		tiers, err := client.Tier.GetTiers(app.ID)
 		if err != nil {
-			t.Errorf("Error getting snapshots: %s\n", err.Error())
+			t.Errorf("Error getting applications: %s\n", err.Error())
 			t.FailNow()
 		}
-		t.Logf("Got %d snapshots from app %s", len(snapshots), app.Name)
-
+		t.Logf("Got %d tiers from app %s", len(tiers), app.Name)
 	}
-
 }
