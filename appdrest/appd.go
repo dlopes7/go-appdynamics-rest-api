@@ -158,7 +158,7 @@ func (c *Client) Do(req *http.Request, v interface{}) error {
 			Code:    resp.StatusCode,
 			Message: fmt.Sprintf("Status Code Error: %d\n", resp.StatusCode),
 		}
-		c.log.Errorf("Error doing request %v\n", resp)
+		c.log.Errorf("Error Request: %v Response: %v\n", req, resp)
 		return err
 	}
 
