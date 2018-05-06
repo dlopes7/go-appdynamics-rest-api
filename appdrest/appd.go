@@ -210,45 +210,6 @@ func (c *Client) do(req *http.Request, v interface{}, authorization bool) error 
 
 }
 
-// DoRestUI makes the http request using authentication. This will break with different versions of AppDynamics
-func (c *Client) DoRestUI(req *http.Request, v interface{}) error {
-
-	req.URL.RawQuery = req.URL.Query().Encode()
-
-	if len(req.Header["X-CSRF-TOKEN"]) == 0 {
-		c.log.Debugf("RESTUI, logging in...")
-		err := c.login(req)
-		if err != nil {
-			panic(err.Error())
-		}
-
-	}
-
-	resp, err := c.client.Do(req)
-	if err != nil {
-		return err
-	}
-	c.log.Debugf("Performed request %v - HTTP %d", req.URL, resp.StatusCode)
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		err := &APIError{
-			Code:    resp.StatusCode,
-			Message: fmt.Sprintf("Status Code Error: %d\nRequest: %v", resp.StatusCode, req),
-		}
-		c.log.Errorf("%v\n", err)
-		return err
-	}
-
-	err = json.NewDecoder(resp.Body).Decode(v)
-	if err != nil {
-		return err
-	}
-	return nil
-
-}
-
 func (c *Client) login(req *http.Request) error {
 
 	url := "/auth?action=login"
