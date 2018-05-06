@@ -68,14 +68,8 @@ type AccountService service
 func (s *AccountService) GetMyAccount() (*Account, error) {
 
 	url := "controller/api/accounts/myaccount"
-
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var account *Account
-	err = s.client.Do(req, &account)
+	err := s.client.Rest("GET", url, &account, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -88,13 +82,8 @@ func (s *AccountService) GetLicenseModules(accID string) ([]*LicenseModule, erro
 
 	url := fmt.Sprintf("controller/api/accounts/%s/licensemodules?output=json", accID)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var licenseModules *licenseModules
-	err = s.client.Do(req, &licenseModules)
+	err := s.client.Rest("GET", url, &licenseModules, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -107,14 +96,8 @@ func (s *AccountService) GetLicenseProperties(accID string, agentType string) ([
 
 	url := fmt.Sprintf("controller/api/accounts/%s/licensemodules/%s/properties?output=json", accID, agentType)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		s.client.log.Error(err.Error())
-		return nil, err
-	}
-
 	var licenseProperties *properties
-	err = s.client.Do(req, &licenseProperties)
+	err := s.client.Rest("GET", url, &licenseProperties, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -127,14 +110,8 @@ func (s *AccountService) GetLicenseUsages(accID string, agentType string) ([]*Us
 
 	url := fmt.Sprintf("controller/api/accounts/%s/licensemodules/%s/usages?output=json", accID, agentType)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		s.client.log.Error(err.Error())
-		return nil, err
-	}
-
 	var licenseUsages *usages
-	err = s.client.Do(req, &licenseUsages)
+	err := s.client.Rest("GET", url, &licenseUsages, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -84,16 +84,12 @@ func (s *BrowserSnapshotService) GetBrowserSnapshots(appID int) ([]*BrowserSnaps
 		TimeRangeString: "last_15_minutes.BEFORE_NOW.-1.-1.1",
 	}
 
-	req, err := s.client.NewRequest("POST", url, browserSnapshotPost)
+	var browserSnapshotList *browserSnapshotList
+	err := s.client.Rest("POST", url, &browserSnapshotList, browserSnapshotPost)
 	if err != nil {
 		return nil, err
 	}
 
-	var browserSnapshotList *browserSnapshotList
-	err = s.client.DoRestUI(req, &browserSnapshotList)
-	if err != nil {
-		return nil, err
-	}
 	snapshots := browserSnapshotList.Snapshots
 
 	return snapshots, nil

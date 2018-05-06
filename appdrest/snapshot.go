@@ -280,13 +280,8 @@ func (s *SnapshotService) getSnapshotsParams(appID int, // Provide either the ap
 		url += fmt.Sprintf("&maximum-results=%v", maximumResults)
 	}
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var snapshots []*Snapshot
-	err = s.client.Do(req, &snapshots)
+	err := s.client.Rest("GET", url, &snapshots, nil)
 	if err != nil {
 		return nil, err
 	}

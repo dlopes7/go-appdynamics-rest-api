@@ -65,13 +65,8 @@ func (s *MetricDataService) GetMetricData(appIDOrName string, metricPath string,
 		url += fmt.Sprintf("&end-time=%v", endTime.UnixNano()/(int64(time.Millisecond)/int64(time.Nanosecond)))
 	}
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var metrics []*MetricData
-	err = s.client.Do(req, &metrics)
+	err := s.client.Rest("GET", url, &metrics, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -87,13 +82,8 @@ func (s *MetricDataService) GetMetricHierarchy(appIDOrName string, metricPath st
 		url += fmt.Sprintf("&metric-path=%s", metricPath)
 	}
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var metrics []*Metric
-	err = s.client.Do(req, &metrics)
+	err := s.client.Rest("GET", url, &metrics, nil)
 	if err != nil {
 		return nil, err
 	}

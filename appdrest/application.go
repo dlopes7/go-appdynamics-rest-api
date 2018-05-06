@@ -52,13 +52,8 @@ func (s *ApplicationService) GetApplications() ([]*Application, error) {
 
 	url := "controller/rest/applications?output=json"
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var apps []*Application
-	err = s.client.Do(req, &apps)
+	err := s.client.Rest("GET", url, &apps, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -71,13 +66,8 @@ func (s *ApplicationService) GetApplication(appNameOrID string) (*Application, e
 
 	url := fmt.Sprintf("controller/rest/applications/%s?output=json", appNameOrID)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var apps []*Application
-	err = s.client.Do(req, &apps)
+	err := s.client.Rest("GET", url, &apps, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -91,13 +81,8 @@ func (s *ApplicationService) GetApplicationsAllTypes() ([]*Application, error) {
 
 	url := fmt.Sprintf("controller/restui/applicationManagerUiBean/getApplicationsAllTypes")
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var apps applicationAllTypes
-	err = s.client.DoRestUI(req, &apps)
+	err := s.client.RestInternal("GET", url, &apps, nil)
 	if err != nil {
 		return nil, err
 	}

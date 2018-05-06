@@ -22,13 +22,8 @@ func (s *TierService) GetTiers(appID int) ([]*Tier, error) {
 
 	url := fmt.Sprintf("controller/rest/applications/%d/tiers?output=json", appID)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var tiers []*Tier
-	err = s.client.Do(req, &tiers)
+	err := s.client.Rest("GET", url, &tiers, nil)
 	if err != nil {
 		return nil, err
 	}

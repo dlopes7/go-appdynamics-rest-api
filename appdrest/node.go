@@ -31,13 +31,8 @@ func (s *NodeService) GetNodes(appIDOrName string) ([]*Node, error) {
 
 	url := fmt.Sprintf("controller/rest/applications/%s/nodes?output=json", appIDOrName)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var nodes []*Node
-	err = s.client.Do(req, &nodes)
+	err := s.client.Rest("GET", url, &nodes, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -50,13 +45,8 @@ func (s *NodeService) GetNode(appIDOrName string, nodeNameOrID string) (*Node, e
 
 	url := fmt.Sprintf("controller/rest/applications/%s/nodes/%s?output=json", appIDOrName, nodeNameOrID)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var nodes []*Node
-	err = s.client.Do(req, &nodes)
+	err := s.client.Rest("GET", url, &nodes, nil)
 	if err != nil {
 		return nil, err
 	}

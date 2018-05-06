@@ -107,9 +107,37 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	return c
 }
 
+// Rest makes a call using the standard Rest API
+func (c *Client) Rest(method string, url string, model interface{}, body interface{}) error {
+
+	req, err := c.newRequest(method, url, nil)
+	if err != nil {
+		return err
+	}
+	err = c.do(req, &model, false)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// RestInternal makes a call using the internal API that requires authorization
+func (c *Client) RestInternal(method string, url string, model interface{}, body interface{}) error {
+
+	req, err := c.newRequest(method, url, nil)
+	if err != nil {
+		return err
+	}
+	err = c.do(req, &model, true)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // NewRequest performs a request.
 // The baseURL on the client will be concatenated with the url argument
-func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
+func (c *Client) newRequest(method, urlStr string, body interface{}) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -141,9 +169,21 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 }
 
 // Do makes the http request
-func (c *Client) Do(req *http.Request, v interface{}) error {
+func (c *Client) do(req *http.Request, v interface{}, authorization bool) error {
 
 	req.URL.RawQuery = req.URL.Query().Encode()
+
+	// If we are here, this is an internal call that needs extra authorization
+	if authorization == true {
+		if len(req.Header["X-CSRF-TOKEN"]) == 0 {
+			c.log.Debugf("RESTUI, logging in...")
+			err := c.login(req)
+			if err != nil {
+				panic(err.Error())
+			}
+
+		}
+	}
 
 	resp, err := c.client.Do(req)
 	if err != nil {
@@ -213,7 +253,7 @@ func (c *Client) login(req *http.Request) error {
 
 	url := "/auth?action=login"
 
-	loginReq, err := c.NewRequest("GET", url, nil)
+	loginReq, err := c.newRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}

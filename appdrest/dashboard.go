@@ -117,14 +117,8 @@ type DashboardService service
 func (s *DashboardService) GetDashboards() ([]*Dashboard, error) {
 
 	url := "/controller/restui/dashboards/getAllDashboardsByType/false"
-
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var dashboards []*Dashboard
-	err = s.client.DoRestUI(req, &dashboards)
+	err := s.client.RestInternal("GET", url, &dashboards, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -137,13 +131,8 @@ func (s *DashboardService) GetDashboard(ID int) (*Dashboard, error) {
 
 	url := fmt.Sprintf("/controller/restui/dashboards/dashboardIfUpdated/%d/-1", ID)
 
-	req, err := s.client.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var dashboard *Dashboard
-	err = s.client.DoRestUI(req, &dashboard)
+	err := s.client.RestInternal("GET", url, &dashboard, nil)
 	if err != nil {
 		return nil, err
 	}
