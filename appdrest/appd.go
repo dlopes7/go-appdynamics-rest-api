@@ -179,7 +179,7 @@ func (c *Client) do(req *http.Request, v interface{}, authorization bool) error 
 			c.log.Debugf("RESTUI, logging in...")
 			err := c.login(req)
 			if err != nil {
-				panic(err.Error())
+				return err
 			}
 
 		}
