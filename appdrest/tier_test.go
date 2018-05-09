@@ -20,9 +20,14 @@ func TestGetTiers(t *testing.T) {
 		app := apps[0]
 		tiers, err := client.Tier.GetTiers(app.ID)
 		if err != nil {
-			t.Errorf("Error getting applications: %s\n", err.Error())
+			t.Errorf("Error getting tiers: %s\n", err.Error())
 			t.FailNow()
 		}
 		t.Logf("Got %d tiers from app %s", len(tiers), app.Name)
+
+		_, err = client.Tier.GetTiers(-1)
+		if err != nil {
+			t.Logf("Expected error getting tiers for invalid app: %s\n", err.Error())
+		}
 	}
 }
