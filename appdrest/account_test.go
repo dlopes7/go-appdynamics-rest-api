@@ -18,6 +18,13 @@ func TestGetMyAccount(t *testing.T) {
 		t.FailNow()
 	}
 	t.Logf("Got account %s", acc.Name)
+
+	// Test with an invalid client
+	client = appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), 1, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	_, err = client.Account.GetMyAccount()
+	if err != nil {
+		t.Logf("Expected error getting account with invalid client: %s\n", err.Error())
+	}
 }
 
 func TestGetLicenseModules(t *testing.T) {
