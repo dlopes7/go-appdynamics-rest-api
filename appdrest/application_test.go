@@ -64,3 +64,26 @@ func TestGetApplicationsAllTypes(t *testing.T) {
 		t.Error("No applications were returned")
 	}
 }
+
+func TestExportApplicationConfig(t *testing.T) {
+	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
+	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	apps, err := client.Application.GetApplicationsAllTypes()
+	if err != nil {
+		t.Errorf("Error getting applications: %s\n", err.Error())
+		t.FailNow()
+	}
+	if len(apps) == 0 {
+		t.Error("No applications were returned")
+	}
+	app := apps[0]
+	_, err = client.Application.ExportApplicationConfig(app.ID)
+	if err != nil {
+		t.Errorf("Error exporting app %s: %s", app.Name, err.Error())
+	}
+
+	_, err = client.Application.ExportApplicationConfig(-1)
+	if err != nil {
+		t.Logf("Expected error trying to export invalid Application: %s", err.Error())
+	}
+}
