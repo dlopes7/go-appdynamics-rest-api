@@ -110,7 +110,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 // Rest makes a call using the standard Rest API
 func (c *Client) Rest(method string, url string, model interface{}, body interface{}) error {
 
-	req, err := c.newRequest(method, url, nil)
+	req, err := c.NewRequest(method, url, nil)
 	if err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func (c *Client) Rest(method string, url string, model interface{}, body interfa
 // RestInternal makes a call using the internal API that requires authorization
 func (c *Client) RestInternal(method string, url string, model interface{}, body interface{}) error {
 
-	req, err := c.newRequest(method, url, nil)
+	req, err := c.NewRequest(method, url, nil)
 	if err != nil {
 		return err
 	}
@@ -137,7 +137,7 @@ func (c *Client) RestInternal(method string, url string, model interface{}, body
 
 // NewRequest performs a request.
 // The baseURL on the client will be concatenated with the url argument
-func (c *Client) newRequest(method, urlStr string, body interface{}) (*http.Request, error) {
+func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -214,7 +214,7 @@ func (c *Client) login(req *http.Request) error {
 
 	url := "/auth?action=login"
 
-	loginReq, err := c.newRequest("GET", url, nil)
+	loginReq, err := c.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}

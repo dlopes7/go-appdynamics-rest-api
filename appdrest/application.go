@@ -2,6 +2,7 @@ package appdrest
 
 import (
 	"fmt"
+	"io/ioutil"
 )
 
 // allApplicationTypes is a wrapper on the json response of GetApplicationAllTypes
@@ -89,4 +90,25 @@ func (s *ApplicationService) GetApplicationsAllTypes() ([]*Application, error) {
 
 	return apps.Applications, nil
 
+}
+
+// ExportApplicationConfig will export an Application to the io.Writer specified
+func (s *ApplicationService) ExportApplicationConfig(appID int) ([]byte, error) {
+	url := fmt.Sprintf("controller/ConfigObjectImportExportServlet?applicationId=%d", appID)
+
+	req, err := s.client.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
 }
