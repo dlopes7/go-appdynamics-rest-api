@@ -55,7 +55,7 @@ var format = logging.MustStringFormatter(
 )
 
 // NewClient Returns a Client, this is needed for any communication
-func NewClient(protocol string, controllerHost string, port int, username string, password string, account string) *Client {
+func NewClient(protocol string, controllerHost string, port int, username string, password string, account string) (*Client, error) {
 
 	// TODO: Let the consumer define the http.Client
 	timeout := time.Duration(60 * time.Second)
@@ -64,7 +64,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	}
 	baseURL, err := url.Parse(fmt.Sprintf("%s://%s:%d/", protocol, controllerHost, port))
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
 	restUserName := fmt.Sprintf("%s@%s", username, account)
@@ -103,7 +103,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.Node = (*NodeService)(&c.common)
 
 	c.log.Debug("Created client successfully")
-	return c
+	return c, nil
 }
 
 // Rest makes a call using the standard Rest API

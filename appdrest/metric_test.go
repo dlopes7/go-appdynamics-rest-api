@@ -11,7 +11,7 @@ import (
 
 func TestGetMetricData(t *testing.T) {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 
 	apps, err := client.Application.GetApplications()
 	if err != nil {
@@ -40,12 +40,18 @@ func TestGetMetricData(t *testing.T) {
 			t.Logf("Got %+v datapoints from app %s", len(metrics[0].MetricValues), app.Name)
 		}
 
+		// Test for Invalid Metric
+		_, err = client.MetricData.GetMetricData("Invalid Application Name", "Overall Application Performance|Calls per Minute", false, appdrest.TimeBETWEENTIMES, 60, time.Now(), time.Now())
+		if err != nil {
+			t.Logf("Expected error getting metrics for invalid Application: %s\n", err.Error())
+		}
+
 	}
 }
 
 func TestGetMetricHierarchy(t *testing.T) {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 
 	apps, err := client.Application.GetApplications()
 	if err != nil {

@@ -11,7 +11,7 @@ import (
 
 func TestGetMyAccount(t *testing.T) {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	acc, err := client.Account.GetMyAccount()
 	if err != nil {
 		t.Errorf("Error getting account: %s\n", err.Error())
@@ -20,7 +20,7 @@ func TestGetMyAccount(t *testing.T) {
 	t.Logf("Got account %s", acc.Name)
 
 	// Test with an invalid client
-	client = appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), 1, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ = appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), 1, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	_, err = client.Account.GetMyAccount()
 	if err != nil {
 		t.Logf("Expected error getting account with invalid client: %s\n", err.Error())
@@ -29,7 +29,7 @@ func TestGetMyAccount(t *testing.T) {
 
 func TestGetLicenseModules(t *testing.T) {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 	acc, err := client.Account.GetMyAccount()
 	if err != nil {
 		t.Errorf("Error getting account: %s\n", err.Error())
@@ -55,7 +55,7 @@ func TestGetLicenseModules(t *testing.T) {
 
 func TestGetLicenseProperties(t *testing.T) {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 
 	acc, err := client.Account.GetMyAccount()
 	if err != nil {
@@ -83,7 +83,7 @@ func TestGetLicenseProperties(t *testing.T) {
 
 func TestGetLicenseUsages(t *testing.T) {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 
 	acc, err := client.Account.GetMyAccount()
 	if err != nil {

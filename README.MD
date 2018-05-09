@@ -13,7 +13,7 @@ import "github.com/dlopes7/go-appdynamics-rest-api/appdrest"
 Create a client, get every Business Transaction for every Application
 
 ```go
-client := appdrest.NewClient("http", "192.168.33.10", 8090, "admin", "password", "customer1")
+client, _ :=  appdrest.NewClient("http", "192.168.33.10", 8090, "admin", "password", "customer1")
 
 apps, err := client.Application.GetApplications()
 	if err != nil {

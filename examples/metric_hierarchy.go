@@ -36,7 +36,7 @@ func recursivePath(client *appdrest.Client, appName string, prefix string) {
 
 func printMetricHierarchy() {
 	port, _ := strconv.Atoi(os.Getenv("APPD_CONTROLLER_PORT"))
-	client := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
+	client, _ := appdrest.NewClient(os.Getenv("APPD_CONTROLLER_PROTOCOL"), os.Getenv("APPD_CONTROLLER_HOST"), port, os.Getenv("APPD_USER"), os.Getenv("APPD_PASSWORD"), os.Getenv("APPD_ACCOUNT"))
 
 	apps, err := client.Application.GetApplications()
 	if err != nil {

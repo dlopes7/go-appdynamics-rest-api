@@ -8,7 +8,7 @@ import (
 )
 
 func getErrorSnapshots() {
-	client := appdrest.NewClient("http", "192.168.33.10", 8090, "admin", "password", "customer1")
+	client, _ := appdrest.NewClient("http", "192.168.33.10", 8090, "admin", "password", "customer1")
 
 	apps, err := client.Application.GetApplications()
 	if err != nil {
