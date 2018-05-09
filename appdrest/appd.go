@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -110,7 +111,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 // Rest makes a call using the standard Rest API
 func (c *Client) Rest(method string, url string, model interface{}, body interface{}) error {
 
-	req, err := c.NewRequest(method, url, nil)
+	req, err := c.newRequest(method, url, nil)
 	if err != nil {
 		return err
 	}
@@ -124,7 +125,7 @@ func (c *Client) Rest(method string, url string, model interface{}, body interfa
 // RestInternal makes a call using the internal API that requires authorization
 func (c *Client) RestInternal(method string, url string, model interface{}, body interface{}) error {
 
-	req, err := c.NewRequest(method, url, nil)
+	req, err := c.newRequest(method, url, nil)
 	if err != nil {
 		return err
 	}
@@ -135,9 +136,9 @@ func (c *Client) RestInternal(method string, url string, model interface{}, body
 	return nil
 }
 
-// NewRequest performs a request.
+// newRequest performs a request.
 // The baseURL on the client will be concatenated with the url argument
-func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
+func (c *Client) newRequest(method, urlStr string, body interface{}) (*http.Request, error) {
 	rel, err := url.Parse(urlStr)
 	if err != nil {
 		return nil, err
@@ -210,11 +211,41 @@ func (c *Client) do(req *http.Request, v interface{}, authorization bool) error 
 
 }
 
+// DoRawRequest makes an HTTP request and returns the response
+func (c *Client) DoRawRequest(method string, url string, body interface{}) ([]byte, error) {
+
+	req, err := c.newRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		err := &APIError{
+			Code:    resp.StatusCode,
+			Message: fmt.Sprintf("Error - Status Code: %d\n", resp.StatusCode),
+		}
+		c.log.Errorf("Error %v, Request: %v, Response: %v", err, req, resp)
+		return nil, err
+	}
+
+	responseString, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return responseString, nil
+}
+
 func (c *Client) login(req *http.Request) error {
 
 	url := "/auth?action=login"
 
-	loginReq, err := c.NewRequest("GET", url, nil)
+	loginReq, err := c.newRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}
