@@ -36,6 +36,7 @@ type Client struct {
 	log *logging.Logger
 
 	Account             *AccountService
+	Analytics           *AnalyticsService
 	Application         *ApplicationService
 	BusinessTransaction *BusinessTransactionService
 	Dashboard           *DashboardService
@@ -94,6 +95,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.common.client = c
 
 	c.Account = (*AccountService)(&c.common)
+	c.Analytics = (*AnalyticsService)(&c.common)
 	c.Application = (*ApplicationService)(&c.common)
 	c.BusinessTransaction = (*BusinessTransactionService)(&c.common)
 	c.MetricData = (*MetricDataService)(&c.common)
