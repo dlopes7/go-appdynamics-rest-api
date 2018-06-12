@@ -43,6 +43,8 @@ func TestGetSnapshotsFiltered(t *testing.T) {
 		app := apps[0]
 		filters := &appdrest.SnapshotFilters{
 			ExecutionTimeInMilis: 3000,
+			MaximumResults:       10,
+			UserExperience:       []string{"SLOW", "ERROR", "VERY_SLOW"},
 		}
 		then := time.Now().Add(time.Duration(-20) * time.Minute)
 		thenMinus5 := time.Now().Add(time.Duration(-5) * time.Minute)
