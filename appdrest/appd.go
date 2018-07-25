@@ -44,6 +44,7 @@ type Client struct {
 	Snapshot            *SnapshotService
 	Tier                *TierService
 	Node                *NodeService
+	TimeRange           *TimeRangeService
 }
 
 type service struct {
@@ -86,7 +87,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	backend1 := logging.NewLogBackend(os.Stdout, "", 0)
 	backend1Formatter := logging.NewBackendFormatter(backend1, format)
 	backend1Leveled := logging.AddModuleLevel(backend1Formatter)
-	backend1Leveled.SetLevel(logging.DEBUG, "")
+	backend1Leveled.SetLevel(logging.WARNING, "")
 
 	logging.SetBackend(backend1Leveled)
 
@@ -103,6 +104,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.Tier = (*TierService)(&c.common)
 	c.Dashboard = (*DashboardService)(&c.common)
 	c.Node = (*NodeService)(&c.common)
+	c.TimeRange = (*TimeRangeService)(&c.common)
 
 	c.log.Debug("Created client successfully")
 	return c, nil
@@ -111,7 +113,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 // Rest makes a call using the standard Rest API
 func (c *Client) Rest(method string, url string, model interface{}, body interface{}) error {
 
-	req, err := c.newRequest(method, url, nil)
+	req, err := c.newRequest(method, url, body)
 	if err != nil {
 		return err
 	}
@@ -125,7 +127,7 @@ func (c *Client) Rest(method string, url string, model interface{}, body interfa
 // RestInternal makes a call using the internal API that requires authorization
 func (c *Client) RestInternal(method string, url string, model interface{}, body interface{}) error {
 
-	req, err := c.newRequest(method, url, nil)
+	req, err := c.newRequest(method, url, body)
 	if err != nil {
 		return err
 	}
