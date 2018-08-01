@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/op/go-logging"
+	"reflect"
 )
 
 // APIError to get HTTP response code to expected errors
@@ -207,7 +208,8 @@ func (c *Client) do(req *http.Request, v interface{}, authorization bool) error 
 		return err
 	}
 
-	if v != nil {
+	if reflect.ValueOf(v).IsNil() {
+
 		err = json.NewDecoder(resp.Body).Decode(v)
 		if err != nil {
 			return err
