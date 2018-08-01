@@ -45,6 +45,7 @@ type Client struct {
 	Tier                *TierService
 	Node                *NodeService
 	TimeRange           *TimeRangeService
+	Configuration       *Configuration
 }
 
 type service struct {
@@ -105,6 +106,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.Dashboard = (*DashboardService)(&c.common)
 	c.Node = (*NodeService)(&c.common)
 	c.TimeRange = (*TimeRangeService)(&c.common)
+	c.Configuration = (*Configuration)(&c.common)
 
 	c.log.Debug("Created client successfully")
 	return c, nil
@@ -205,9 +207,11 @@ func (c *Client) do(req *http.Request, v interface{}, authorization bool) error 
 		return err
 	}
 
-	err = json.NewDecoder(resp.Body).Decode(v)
-	if err != nil {
-		return err
+	if v != nil {
+		err = json.NewDecoder(resp.Body).Decode(v)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 
