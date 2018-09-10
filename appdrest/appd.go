@@ -46,6 +46,7 @@ type Client struct {
 	Tier                *TierService
 	Node                *NodeService
 	TimeRange           *TimeRangeService
+	Configuration       *Configuration
 }
 
 type service struct {
@@ -110,6 +111,7 @@ func NewClient(protocol string, controllerHost string, port int, username string
 	c.Dashboard = (*DashboardService)(&c.common)
 	c.Node = (*NodeService)(&c.common)
 	c.TimeRange = (*TimeRangeService)(&c.common)
+	c.Configuration = (*Configuration)(&c.common)
 
 	c.log.Debug("Created client successfully")
 	return c, nil
@@ -122,7 +124,13 @@ func (c *Client) Rest(method string, url string, model interface{}, body interfa
 	if err != nil {
 		return err
 	}
-	err = c.do(req, &model, false)
+
+	if model == nil {
+		err = c.do(req, nil, false)
+	} else {
+		err = c.do(req, &model, false)
+	}
+
 	if err != nil {
 		return err
 	}
@@ -210,9 +218,12 @@ func (c *Client) do(req *http.Request, v interface{}, authorization bool) error 
 		return err
 	}
 
-	err = json.NewDecoder(resp.Body).Decode(v)
-	if err != nil {
-		return err
+	if v != nil {
+		err = json.NewDecoder(resp.Body).Decode(v)
+		if err != nil {
+			return err
+
+		}
 	}
 	return nil
 
