@@ -2,6 +2,7 @@ package appdrest
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -61,8 +62,12 @@ func NewClient(protocol string, controllerHost string, port int, username string
 
 	// TODO: Let the consumer define the http.Client
 	timeout := time.Duration(60 * time.Second)
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
 	httpClient := &http.Client{
 		Timeout: timeout,
+		Transport: tr,
 	}
 	baseURL, err := url.Parse(fmt.Sprintf("%s://%s:%d/", protocol, controllerHost, port))
 	if err != nil {
