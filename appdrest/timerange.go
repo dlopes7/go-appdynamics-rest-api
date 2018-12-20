@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+
+
 // TimeRange represents a TimeRange on the controller
 type TimeRange struct {
 	ID          int    `json:"id"`
@@ -16,19 +18,22 @@ type TimeRange struct {
 	ModifiedBy  string `json:"modifiedBy"`
 	ModifiedOn  int64  `json:"modifiedOn"`
 	Description string `json:"description"`
-	TimeRange   struct {
-		Type              string `json:"type"`
-		DurationInMinutes int    `json:"durationInMinutes"`
-		StartTime         int64  `json:"startTime"`
-		EndTime           int64  `json:"endTime"`
-		TimeRange         struct {
-			StartTime int64 `json:"startTime"`
-			EndTime   int64 `json:"endTime"`
-		} `json:"timeRange"`
-		TimeRangeAdjusted bool `json:"timeRangeAdjusted"`
-	} `json:"timeRange"`
+	TimeRange   TimeDefinition `json:"timeRange"`
 	Shared     bool `json:"shared"`
 	Modifiable bool `json:"modifiable"`
+}
+
+// TimeDefinition is the time filter
+type TimeDefinition struct {
+	Type              string `json:"type"`
+	DurationInMinutes int    `json:"durationInMinutes"`
+	StartTime         int64  `json:"startTime"`
+	EndTime           int64  `json:"endTime"`
+	TimeRange         struct {
+		StartTime int64 `json:"startTime"`
+		EndTime   int64 `json:"endTime"`
+	} `json:"timeRange"`
+	TimeRangeAdjusted bool `json:"timeRangeAdjusted"`
 }
 
 // TimeRangeService intermediates TimeRange operations
@@ -80,3 +85,18 @@ func (s *TimeRangeService) UpdateTimeRange(tr TimeRange) (*TimeRange, error) {
 
 	return returnTr, nil
 }
+
+// CreateTimeRange will create a TimeRange
+func (s *TimeRangeService) CreateTimeRange(tr TimeRange) (*TimeRange, error) {
+
+	url := "controller/restui/user/createCustomRange"
+
+	var returnTr *TimeRange
+	err := s.client.RestInternal("POST", url, &returnTr, &tr)
+	if err != nil {
+		return nil, err
+	}
+
+	return returnTr, nil
+}
+
